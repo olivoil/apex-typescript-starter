@@ -1,0 +1,15 @@
+{
+  "name": "apex-ts",
+  "description": "bootstrap apex project using typescript",
+  "profile": "dev",
+  "memory": 128,
+  "timeout": 5,
+  "runtime": "nodejs6.10",
+  "handler": ".dev.handler",
+  "role": "arn:aws:iam::065895952035:role/apex-ts_lambda_function",
+  "hooks": {
+    "build": "../../node_modules/.bin/gulp --cwd . --gulpfile ../../gulpfile.js apex:build",
+    "clean": "../../node_modules/.bin/gulp --cwd . --gulpfile ../../gulpfile.js apex:clean"
+  },
+  "environment": {}
+}

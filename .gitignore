@@ -1,0 +1,14 @@
+functions/*/.js
+functions/*/.js/*
+
+functions/*/.dev
+functions/*/.dev/*
+
+functions/*/.prod
+functions/*/.prod/*
+
+functions/*/.staging
+functions/*/.staging/*
+
+functions/*/.uat
+functions/*/.uat/*
