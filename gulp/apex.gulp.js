@@ -14,19 +14,12 @@ const path = require("path");
 const DEFAULT_ENV = "dev";
 
 /**
- * ---------------------------------------------------------------------------
- * @task {apex}
- */
-gulp.task("apex", ["apex:build"]);
-
-/**
  * build a function
  * 
  * @task {apex:build}
  * @arg {env, -e} apex environment, can also be specified via APEX_ENV or NODE_ENV
  * @arg {function, -f} function name
  */
-gulp.task("build", ["apex:build"]);
 gulp.task("apex:build", ["ts:compile"], () => {
 	const env = process.env.APEX_ENV || process.env.NODE_ENV || argv.env || argv.e || DEFAULT_ENV;
 	const functionName = path.basename(argv.f || argv.function || process.cwd());
@@ -64,20 +57,20 @@ gulp.task("apex:build", ["ts:compile"], () => {
 /**
  * clean compiled scripts
  * 
- * @task {apex:build}
+ * @task {apex:clean}
  * @arg {env, -e} apex environment, can also be specified via APEX_ENV or NODE_ENV
  * @arg {function, -f} function name
  */
 gulp.task("apex:clean", () => {
 	const env = process.env.APEX_ENV || process.env.NODE_ENV || argv.env || argv.e || DEFAULT_ENV;
-  const functionName = argv.f || argv.function;
-  
-  if (functionName) {
-     process.chdir(path.join(__dirname, "..", "functions", functionName));
-     return del(["js", env]);
-  }
-  
-  return del(["functions/*/js", `functions/*/${env}`]);
+	const functionName = argv.f || argv.function;
+
+	if (functionName) {
+		process.chdir(path.join(__dirname, "..", "functions", functionName));
+		return del([`.${env}`]);
+	}
+
+	return del([`functions/**/.${env}`]);
 });
 
 /**

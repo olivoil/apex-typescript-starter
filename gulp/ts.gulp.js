@@ -1,7 +1,6 @@
 
 const argv = require("yargs").argv;
 const gulp = require("gulp");
-const gutil = require("gulp-util");
 const ts = require("gulp-typescript");
 const tslint = require("gulp-tslint");
 const merge = require("merge2");
@@ -9,20 +8,9 @@ const sourcemaps = require("gulp-sourcemaps");
 const path = require("path");
 const jest = require("gulp-jest").default;
 const debug = require("gulp-debug");
+const del = require("del");
 
 const tsProject = ts.createProject(path.join(__dirname, "../tsconfig.json"));
-
-/**
- * ---------------------------------------------------------------------------
- * @task {ts}
- */
-gulp.task("ts", ["ts:watch"]);
-
-/**
- * lint and test
- * @task {test}
- */
-gulp.task("test", ["ts:lint", "ts:test"]);
 
 /**
  * run tests
@@ -75,20 +63,6 @@ gulp.task("ts:compile", () => {
 });
 
 /**
- * watch function and compile on file save.
- * 
- * @task {ts:watch}
- * @arg {function, -f} function name
- */
-gulp.task("ts:watch", ["ts:lint", "ts:compile"], () => {
-  const functionName = argv.f || argv.function;
-  if (functionName) {
-		process.chdir(path.join(__dirname, "..", "functions", path.basename(functionName)));
-  }
-  gulp.watch("**/*.ts", ["ts:lint", "ts:compile"]);
-});
-
-/**
  * run tslint on typescript code
  * waiting on this PR to fix gulp-tslint to upgrade tslint to v5
  * https://github.com/panuhorsmalahti/gulp-tslint/pull/113
@@ -117,4 +91,19 @@ gulp.task("ts:lint", () => {
     reportLimit: 15,
     summarizeFailureOutput: true,
   }));
+});
+
+/**
+ * clean compiled scripts
+ * 
+ * @task {ts:clean}
+ * @arg {function, -f} function name
+ */
+gulp.task("ts:clean", () => {
+	const functionName = argv.f || argv.function;
+	if (functionName) {
+		process.chdir(path.join(__dirname, "..", "functions", path.basename(functionName)));
+	}
+
+	return del([`**/.js`]);
 });
