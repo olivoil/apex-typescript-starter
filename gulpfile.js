@@ -48,10 +48,10 @@ gulp.task("test", ["ts:typecheck", "ts:lint", "ts:test"]);
  * @task {watch}
  * @arg {function, -f} function name
  */
-gulp.task("watch", () => {
+gulp.task("watch", ["test"], () => {
   const functionName = argv.f || argv.function;
   if (functionName) {
 		process.chdir(path.join(__dirname, "functions", path.basename(functionName)));
   }
-  gulp.watch("**/*.ts", ["ts:lint", "ts:test"]);
+  gulp.watch("**/*.ts", ["test"]);
 });
