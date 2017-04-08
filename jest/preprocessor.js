@@ -1,5 +1,5 @@
 const appRoot = require("app-root-path");
-const typescript = require("typescript");
+const ts = require("typescript");
 const babelJest = require("babel-jest");
 
 const tsConfig = require(`${appRoot.path}/tsconfig.json`);
@@ -10,11 +10,18 @@ module.exports = {
 		const isJavaScript = path.endsWith(".js") || path.endsWith(".jsx");
 
 		if (isTypeScript) {
-			src = typescript.transpile(
-				src,
-				tsConfig.compilerOptions,
-				path, []
-			);
+			const res = ts.transpileModule(src, {
+				compilerOptions: tsConfig.compilerOptions,
+				fileName: path,
+			    reportDiagnostics: true
+			});
+			
+			if (res.diagnostics && res.diagnostics.length) {
+	            collectErrorMessages(res.diagnostics).forEach(console.log);
+	            throw new Error(`${res.diagnostics.length} typescript errors in ${path}`);
+			} else {
+				src = res.outputText;
+			}
 		}
 
 		if (isJavaScript || isTypeScript) {
@@ -40,3 +47,20 @@ module.exports = {
 		return src;
 	},
 };
+
+function collectErrorMessages(diagnostics) {
+    const errorMessages = [];
+
+	diagnostics.forEach(diagnostic => {
+        let message = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
+        if (diagnostic.file) {
+            let { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
+            errorMessages.push(`  Error ${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`);
+        }
+        else {
+        	errorMessages.push(`  Error: ${message}`);
+        }
+    });
+    
+    return errorMessages;
+}

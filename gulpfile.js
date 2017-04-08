@@ -40,7 +40,7 @@ gulp.task("clean", ["apex:clean", "ts:clean"]);
  * @task {test}
  * @arg {function, -f} function name
  */
-gulp.task("test", ["ts:lint", "ts:test"]);
+gulp.task("test", ["ts:typecheck", "ts:lint", "ts:test"]);
 
 /**
  * watch function and test on save
@@ -48,7 +48,7 @@ gulp.task("test", ["ts:lint", "ts:test"]);
  * @task {watch}
  * @arg {function, -f} function name
  */
-gulp.task("watch", ["ts:lint", "ts:test"], () => {
+gulp.task("watch", () => {
   const functionName = argv.f || argv.function;
   if (functionName) {
 		process.chdir(path.join(__dirname, "functions", path.basename(functionName)));

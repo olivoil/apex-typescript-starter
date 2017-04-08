@@ -7,8 +7,8 @@ const merge = require("merge2");
 const sourcemaps = require("gulp-sourcemaps");
 const path = require("path");
 const jest = require("gulp-jest").default;
-const debug = require("gulp-debug");
 const del = require("del");
+// const debug = require("gulp-debug");
 
 const tsProject = ts.createProject(path.join(__dirname, "../tsconfig.json"));
 
@@ -24,8 +24,7 @@ gulp.task("ts:test", () => {
 		process.chdir(path.join(__dirname, "..", "functions", path.basename(functionName)));
 	}
 
-	return gulp.src("**/*.test.ts")
-		.pipe(debug({ title: "ts:test" }))
+	return gulp.src('')
 		.pipe(jest({
 			config: {
 				"rootDir": path.join(__dirname, ".."),
@@ -63,6 +62,22 @@ gulp.task("ts:compile", () => {
 });
 
 /**
+ * check type integrity
+ * 
+ * @task {ts:typecheck}
+ * @arg {function, -f} function name
+ */
+gulp.task('ts:typecheck', () => {
+  const functionName = argv.f || argv.function;
+  if (functionName) {
+		process.chdir(path.join(__dirname, "..", "functions", path.basename(functionName)));
+  }
+  
+  return gulp.src(["**/*.ts", "!**/*.test.ts"]).pipe(tsProject());
+});
+
+
+/**
  * run tslint on typescript code
  * waiting on this PR to fix gulp-tslint to upgrade tslint to v5
  * https://github.com/panuhorsmalahti/gulp-tslint/pull/113
@@ -92,6 +107,7 @@ gulp.task("ts:lint", () => {
     summarizeFailureOutput: true,
   }));
 });
+
 
 /**
  * clean compiled scripts

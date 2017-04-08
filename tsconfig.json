@@ -20,6 +20,6 @@
     "preserveConstEnums": true
   },
   "exclude": [
-    "dist"
+    ".js", ".dev", ".prod", ".uat", ".staging"
   ]
 }
